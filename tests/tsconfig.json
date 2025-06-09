@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "commonjs",
+        "moduleResolution": "Node",
+        "sourceMap": true,
+        "outDir": "../tests-out",
+        "baseUrl": "./TodoMVC/",
+        "paths": {
+            "@myhelper/*": [
+                "packages/myhelper/*"
+            ] // This mapping is relative to "baseUrl".
+        }
+        
+    }
+}
