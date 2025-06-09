@@ -44,7 +44,7 @@ test('Filter todos', async ({ }) => {
 });
 
 test('Delete todo item', async ({ }) => {
-    let buyGroceries = page.getByText('Buy groceries');
-    await buyGroceries.getByRole('button', { name: 'Delete' }).click();
+    await page.getByText('Buy groceries').hover()
+    await page.locator('//label[contains(text(),"Buy groceries")]/following-sibling::button').click();
     await expect(page.getByText('Buy groceries')).not.toBeVisible();
 });
