@@ -17,6 +17,7 @@ export class TodoMVCPage {
 
     async fillinTodo(task: string) {
         await this.inputTodo.fill(task)
+        await this.inputTodo.press('Enter');
     }
 
     async markTaskComplete(task: string) {
@@ -24,6 +25,7 @@ export class TodoMVCPage {
     }
 
     async deleteTask(task: string) {
+        (await this.getTask(task)).hover()
         await this.btnDeleteTask(task).click()
     }
 
@@ -41,9 +43,5 @@ export class TodoMVCPage {
 
     async filterCompleted() {
         await this.linkCompleted.click()
-    }
-
-    async hoverTask(task: string) {
-        (await this.getTask(task)).hover()
     }
 }
