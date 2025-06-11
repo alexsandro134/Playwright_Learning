@@ -1,10 +1,12 @@
 import { test, expect, Page } from '@playwright/test';
-
+import { TodoMVCPage } from '../../page-object/TodoMVC.page'
 test.describe.configure({ mode: 'serial' });
 
 let page: Page;
+let toDoMVCPage
 test.beforeAll(async ({ browser }) => {
     page = await browser.newPage();
+    toDoMVCPage = new TodoMVCPage(page)
 });
 
 test.afterAll(async () => {
@@ -12,39 +14,39 @@ test.afterAll(async () => {
 });
 
 test('Add new todo item', async ({ }) => {
-    await page.goto('/todomvc/#');
-    await page.getByPlaceholder('What needs to be done?').fill('Buy groceries');
+    await toDoMVCPage.navigate()
+    await toDoMVCPage.fillinTodo('Buy groceries')
     await page.keyboard.press('Enter');
-    await expect(page.getByText('Buy groceries')).toBeVisible();
+    await expect(await toDoMVCPage.getTask('Buy groceries')).toBeVisible();
 
-    await page.getByPlaceholder('What needs to be done?').fill('Walk the dog');
+    await toDoMVCPage.fillinTodo('Walk the dog')
     await page.keyboard.press('Enter');
-    await expect(page.getByText('Walk the dog')).toBeVisible();
+    await expect(await toDoMVCPage.getTask('Walk the dog')).toBeVisible();
 })
 
 test('Mark todo as complete', async ({ }) => {
-    await page.getByText('Buy groceries').locator('..').getByRole('checkbox').check();
-    await expect(page.getByText('Buy groceries').locator('..').getByRole('checkbox')).toBeChecked();
+    await toDoMVCPage.markTaskComplete('Buy groceries')
+    await expect(toDoMVCPage.chkboxComplete('Buy groceries')).toBeChecked();
 });
 
 test('Filter todos', async ({ }) => {
 
-    await page.getByText('Active').click();
-    await expect(page.getByText('Walk the dog')).toBeVisible();
-    await expect(page.getByText('Buy groceries')).not.toBeVisible();
+    await toDoMVCPage.filterActive()
+    await expect(await toDoMVCPage.getTask('Walk the dog')).toBeVisible();
+    await expect(await toDoMVCPage.getTask('Buy groceries')).not.toBeVisible();
 
     // Expects page to have a heading with the name of Installation.
-    await page.getByRole('link').getByText('Completed').click();
-    await expect(page.getByText('Walk the dog')).not.toBeVisible();
-    await expect(page.getByText('Buy groceries')).toBeVisible();
+    await toDoMVCPage.filterCompleted()
+    await expect(await toDoMVCPage.getTask('Walk the dog')).not.toBeVisible();
+    await expect(await toDoMVCPage.getTask('Buy groceries')).toBeVisible();
 
-    await page.getByRole('link').getByText('All').click();
-    await expect(page.getByText('Walk the dog')).toBeVisible();
-    await expect(page.getByText('Buy groceries')).toBeVisible();
+    await toDoMVCPage.filterAll()
+    await expect(await toDoMVCPage.getTask('Walk the dog')).toBeVisible();
+    await expect(await toDoMVCPage.getTask('Buy groceries')).toBeVisible();
 });
 
 test('Delete todo item', async ({ }) => {
-    await page.getByText('Buy groceries').hover()
-    await page.locator('//label[contains(text(),"Buy groceries")]/following-sibling::button').click();
-    await expect(page.getByText('Buy groceries')).not.toBeVisible();
+    await toDoMVCPage.hoverTask('Buy groceries')
+    await toDoMVCPage.deleteTask('Buy groceries')
+    await expect(await toDoMVCPage.getTask('Buy groceries')).not.toBeVisible();
 });
