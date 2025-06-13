@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import path = require('path');
 test('Dynamic Controls', async ({ page }) => {
     await page.goto('https://the-internet.herokuapp.com/')
     await page.getByRole('link', { name: 'Dynamic Controls' }).click()
@@ -18,5 +19,39 @@ test('Dropdown list', async ({ page }) => {
     await page.goto('https://the-internet.herokuapp.com/')
     await page.getByRole('link', { name: 'Dropdown' }).click()
     await expect(page.getByText('Dropdown List')).toBeVisible()
+    await page.locator('#dropdown').selectOption('Option 1')
+    await page.locator('#dropdown').selectOption('Option 2')
+    const selectedOption = page.locator('option[value="2"]')
+    const selectedValue = await selectedOption.getAttribute('selected')
+    await expect(selectedValue).toEqual('selected')
+});
 
+test('File Upload', async ({ page }) => {
+    await page.goto('https://the-internet.herokuapp.com/')
+    await page.getByRole('link', { name: 'File Upload' }).click()
+    await expect(page.getByText('File Uploader')).toBeVisible()
+    const fileChoosePromise = page.waitForEvent('filechooser')
+
+    await page.locator('#file-upload').click()
+    const fileChooser = await fileChoosePromise
+    console.log('aaa', __dirname)
+    await fileChooser.setFiles(path.join(__dirname, 'sample.jpg'))
+
+    await page.getByText('Upload').click()
+    await expect(page.getByText('File Uploaded!')).toBeVisible()
+});
+
+test('Hovers', async ({ page }) => {
+    await page.goto('https://the-internet.herokuapp.com/')
+    await page.getByRole('link', { name: 'Hovers'}).click()
+    const listProfile = await page.$$('.example .figure')
+    await listProfile[0].hover()
+    await expect(page.getByText('name: user1')).toBeVisible()
+});
+
+test('Drag and drop', async ({ page }) => {
+    await page.goto('https://the-internet.herokuapp.com/')
+    await page.getByRole('link', { name: 'Drag and Drop'}).click()
+    await expect(page.getByText('Drag and Drop')).toBeVisible()
+    await page.locator('#column-a').dragTo(page.locator('#column-b'))
 });
