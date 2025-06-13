@@ -9,6 +9,7 @@ export class TodoMVCPage {
     public linkActive = this.page.getByRole('link').getByText('Active')
     public chkboxComplete = (task: string) => { return this.page.getByText(task).locator('..').getByRole('checkbox') }
     public btnDeleteTask = (task: string) => { return this.page.locator(`//label[contains(text(), '${task}')]/following-sibling::button`) }
+    // public btnDeleteTask = (task: string) => { return this.page.getByRole('button', { name: task }) }
     public txtTask = (task: string) => { return this.page.getByText(task) }
 
     async navigate() {

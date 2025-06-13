@@ -15,7 +15,7 @@ export const test = baseTest.extend<MyFixtures>({
 
         // await todoMVCPage.deleteTask('Buy groceries')
         // await todoMVCPage.deleteTask('Walk the dog')
-    }
+    },
 });
 
 export { expect } from '@playwright/test'
