@@ -1,8 +1,10 @@
 import { test as baseTest } from '@playwright/test';
 import { TodoMVCPage } from '../page-object/TodoMVC.page'
+import { HerokuApp } from '../page-object/HerokuApp.page';
 
 type MyFixtures = {
     todoMVCPage: TodoMVCPage
+    herokuApp: HerokuApp
 }
 
 export const test = baseTest.extend<MyFixtures>({
@@ -12,10 +14,14 @@ export const test = baseTest.extend<MyFixtures>({
         await todoMVCPage.fillinTodo('Buy groceries')
         await todoMVCPage.fillinTodo('Walk the dog')
         await use(todoMVCPage);
-
-        // await todoMVCPage.deleteTask('Buy groceries')
-        // await todoMVCPage.deleteTask('Walk the dog')
     },
+
+    herokuApp: async ({page}, use) => {
+        const herokuApp = new HerokuApp(page)
+        await herokuApp.navigate();
+
+        await use(herokuApp)
+    }
 });
 
 export { expect } from '@playwright/test'
