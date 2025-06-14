@@ -22,8 +22,8 @@ export class HerokuApp {
 
         await this.page.locator('#file-upload').click()
         const fileChooser = await fileChoosePromise
-        await fileChooser.setFiles(path.join(__dirname, fileName))
+        await fileChooser.setFiles(path.join(__dirname, '../resoures/', fileName))
 
-        await this.page.getByText('Upload').click()
+        await this.page.getByText('Upload', { exact: true }).click()
     }
 }
