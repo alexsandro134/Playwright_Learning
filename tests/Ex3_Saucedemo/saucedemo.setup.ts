@@ -1,8 +1,8 @@
 import { expect, Page, test as setup } from "@playwright/test";
 import path = require('path');
 
-const authFile = path.join(__dirname, '../../.auth/normalUser.json')
-console.log("🚀 ~ __dirname:", __dirname)
+const authFile = path.join(__dirname, 'playwright/.auth/normalUser.json')
+// console.log("🚀 ~ __dirname:", __dirname)
 
 setup('authenticate', async ({ page }) => {
     await page.goto('https://www.saucedemo.com/')
@@ -14,7 +14,7 @@ setup('authenticate', async ({ page }) => {
 
     const itemSauceLabsBackpack = await page.getByText('Sauce Labs Backpack')
     expect(itemSauceLabsBackpack).toBeVisible()
-
+    // await page.locator('#add-to-cart-sauce-labs-backpack').click()
     await page.context().storageState({path: authFile})
 });
 // test('Sauce demo authentication', async ({ page }) => {
