@@ -1,4 +1,5 @@
 import { expect, Page, test as setup } from "@playwright/test";
+import { Saucedemo } from '../../page-object/Saucedemo.page'
 import path = require('path');
 
 const authFile = path.join(__dirname, 'playwright/.auth/normalUser.json')
@@ -6,39 +7,32 @@ const lockedOutAuthFile = path.join(__dirname, 'playwright/.auth/lockedOutUser.j
 const problemAuthFile = path.join(__dirname, 'playwright/.auth/problemUser.json')
 const performanceGlitchFile = path.join(__dirname, 'playwright/.auth/performanceGlitchUser.json')
 
+
+
 setup('authenticate', async ({ page }) => {
-    await page.goto('https://www.saucedemo.com/')
-    await page.getByPlaceholder('Username').fill('standard_user')
-    await page.getByPlaceholder('Password').fill('secret_sauce')
-    await page.locator('#login-button').click()
+    const sauceDemo = new Saucedemo(page)
+    await sauceDemo.loginWithUser('standard_user')
 
     page.waitForURL('https://www.saucedemo.com/inventory.html')
-    await page.context().storageState({path: authFile})
+    await page.context().storageState({ path: authFile })
 });
 
-setup('lockedOut', async ({page}) => {
-    await page.goto('https://www.saucedemo.com/')
-    await page.getByPlaceholder('Username').fill('locked_out_user')
-    await page.getByPlaceholder('Password').fill('secret_sauce')
-    await page.locator('#login-button').click()
+setup('lockedOut', async ({ page }) => {
+    const sauceDemo = new Saucedemo(page)
+    await sauceDemo.loginWithUser('locked_out_user')
 
-    await page.context().storageState({path: lockedOutAuthFile})
+    await page.context().storageState({ path: lockedOutAuthFile })
 })
 
-setup('problem', async ({page}) => {
-    await page.goto('https://www.saucedemo.com/')
-    await page.getByPlaceholder('Username').fill('problem_user')
-    await page.getByPlaceholder('Password').fill('secret_sauce')
-    await page.locator('#login-button').click()
-
-    await page.context().storageState({path: problemAuthFile})
+setup('problem', async ({ page }) => {
+    const sauceDemo = new Saucedemo(page)
+    await sauceDemo.loginWithUser('problem_user')
+    await page.context().storageState({ path: problemAuthFile })
 })
 
-setup('performanceGlitch', async ({page}) => {
-    await page.goto('https://www.saucedemo.com/')
-    await page.getByPlaceholder('Username').fill('performance_glitch_user')
-    await page.getByPlaceholder('Password').fill('secret_sauce')
-    await page.locator('#login-button').click({timeout: 10000})
+setup('performanceGlitch', async ({ page }) => {
+    const sauceDemo = new Saucedemo(page)
+    await sauceDemo.loginWithUser('performance_glitch_user', 10000)
 
-    await page.context().storageState({path: performanceGlitchFile})
+    await page.context().storageState({ path: performanceGlitchFile })
 })

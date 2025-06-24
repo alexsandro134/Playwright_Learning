@@ -24,7 +24,8 @@ test.describe('Testing with performance glitch user', () => {
     test('Login take more time than normal with performance glitch', async ({ page }) => {
         await page.goto('https://www.saucedemo.com/inventory.html')
         const itemSauceLabsBackpack = await page.getByText('Sauce Labs Backpack')
-        expect(itemSauceLabsBackpack).toBeVisible({timeout: 60000})
+        await itemSauceLabsBackpack.waitFor({ state: "visible", timeout: 10000 })
+        expect(itemSauceLabsBackpack).toBeVisible({ timeout: 10000 })
     });
 
 });
@@ -33,7 +34,8 @@ test.describe('Testing with lock out user', () => {
     test('Unable to login with locked out user', async ({ page }) => {
         // is there anyway to verify the state when click login button
         await page.goto('https://www.saucedemo.com/inventory.html')
-        expect(await page.locator('//h3')).toHaveText("Epic sadface: You can only access '/inventory.html' when you are logged in.")
+        const text = await page.locator('//h3').textContent()
+        expect(text).toEqual("Epic sadface: You can only access '/inventory.html' when you are logged in.")
     });
 });
 
