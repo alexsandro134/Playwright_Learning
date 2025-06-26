@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-
+import { Saucedemo } from "../../page-object/Saucedemo.page";
 test.use({ storageState: 'tests/Ex3_Saucedemo/playwright/.auth/normalUser.json' })
 test('standard user_Add to cart', async ({ page }) => {
     await page.goto('https://www.saucedemo.com/inventory.html')
@@ -24,8 +24,7 @@ test.describe('Testing with performance glitch user', () => {
     test('Login take more time than normal with performance glitch', async ({ page }) => {
         await page.goto('https://www.saucedemo.com/inventory.html')
         const itemSauceLabsBackpack = await page.getByText('Sauce Labs Backpack')
-        await itemSauceLabsBackpack.waitFor({ state: "visible", timeout: 10000 })
-        expect(itemSauceLabsBackpack).toBeVisible({ timeout: 10000 })
+        await expect(itemSauceLabsBackpack).toBeVisible({timeout: 40000})
     });
 
 });
@@ -38,4 +37,3 @@ test.describe('Testing with lock out user', () => {
         expect(text).toEqual("Epic sadface: You can only access '/inventory.html' when you are logged in.")
     });
 });
-
