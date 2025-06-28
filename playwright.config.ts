@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  testMatch: 'Ex3_Saucedemo/*user.ts',
+  testMatch: 'Ex4_Automationexercise/01_UserRegistrationFlow.spec.ts',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -24,14 +24,14 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'setup', testMatch: /.*\.setup\.ts/ },
+    // { name: 'setup', testMatch: /.*\.setup\.ts/ },
     {
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: 'playwright/.auth/normalUser.json',
+        // storageState: 'playwright/.auth/normalUser.json',
       },
-      dependencies: ['setup']
+      // dependencies: ['setup']
     },
   ],
 });
