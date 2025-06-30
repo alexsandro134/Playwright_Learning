@@ -1,5 +1,5 @@
 import { Page, test, expect } from "@playwright/test"
-import { title } from "process"
+import { Automationexsercise } from '../../page-object/Automationexercise.page'
 function generateUniqueEmail() {
     const now = new Date()
     const timestamp = now.getTime() + Math.floor(Math.random() * 1000)
@@ -98,18 +98,8 @@ test('User Registration Flow', async ({ page }) => {
     const enterAccountInformationPage = await page.getByText('Enter Account Information')
     await expect(enterAccountInformationPage).toBeVisible()
 
-    await page.getByText('Title').locator('..').locator('div label', { hasText: youngUser.title }).click()
-    await page.locator('input#password').fill(youngUser.password)
-    await page.locator('input#first_name').fill(youngUser.firstname)
-    await page.locator('input#last_name').fill(youngUser.lastname)
-    await page.locator('input#address1').fill(youngUser.address)
-    await page.locator('select#country').selectOption(youngUser.country)
-    await page.locator('input#state').fill(youngUser.state)
-    await page.locator('input#city').fill(youngUser.city)
-    await page.locator('input#zipcode').fill(youngUser.zipcode)
-    await page.locator('input#mobile_number').fill(youngUser.mobile)
-    await page.getByRole('button', { name: 'Create Account' }).click()
-
+    const automationexercisePage = new Automationexsercise(page)
+    automationexercisePage.inputNewAccountInformation(youngUser)
     const txtAccountCreated = await page.getByText('Account Created!')
     await expect(txtAccountCreated).toBeVisible()
 });
