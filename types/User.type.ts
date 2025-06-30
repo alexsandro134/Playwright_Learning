@@ -9,7 +9,9 @@ type User = {
     age: number,
     country: string,
     state: string,
-    zipcode: number,
+    zipcode: string,
     mobile: string,
     address: string
 }
+
+export { User }

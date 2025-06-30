@@ -1,62 +1,65 @@
-function generateUniqueEmail() {
+export function generateUniqueEmail() {
     const now = new Date()
     const timestamp = now.getTime() + Math.floor(Math.random() * 1000)
     const email = "testing_" + timestamp + "@gmail.com"
     return email
 }
 
-function generateUniqueUsername() {
+export function generateUniqueUsername() {
+    let name = { firstname: '', username: '' }
     const names = ["alex", "barone", "justin", "phat", "long"]
     const randomIndex = Math.floor(Math.random() * names.length)
     const randomName = names[randomIndex]
     const randomNumber = Math.floor(Math.random() * 999) + 1
     const username = randomName + "_" + randomNumber
-    return username
+    name.firstname = randomName
+    name.username = username
+    return name
 }
 
-function generateUniqueLastname() {
+export function generateUniqueLastname() {
     const names = ["le", "nguyen", "tran", "lac"]
     const randomIndex = Math.floor(Math.random() * names.length)
     const randomLastName = names[randomIndex]
     return randomLastName
 }
 
-function generateAddress() {
+export function generateAddress() {
     return '123 Main Street, Anytown, CA 91234'
 }
 
-function generateCountry() {
+export function generateCountry() {
     const countries = ["United States", "India", "Australia", "Canada", "Israel", "New Zealand", "Singapore"]
     const randomIndex = Math.floor(Math.random() * countries.length)
     const randomCountry = countries[randomIndex]
     return randomCountry
 }
 
-function generateState() {
+export function generateState() {
     const states = ["Floria", "Vermont", "Utah", "Idaho", "Washington"]
     const randomIndex = Math.floor(Math.random() * states.length)
     const randomState = states[randomIndex]
     return randomState
 }
 
-function generateCity() {
+export function generateCity() {
     const cities = ["New York", "Phoenix", "Chicago", "Los Angeles"]
     const randomIndex = Math.floor(Math.random() * cities.length)
     const randomCity = cities[randomIndex]
     return randomCity
 }
 
-function generateZipcode() {
+export function generateZipcode() {
     const randomZipCode = Math.floor(Math.random() * 99999) + 1
     return randomZipCode.toString()
 }
 
-function generateMobileNumber() {
+export function generateMobileNumber() {
     const randomMobileNumber = '0' + (Math.floor(Math.random() * 9999999) + 1)
     return randomMobileNumber
 }
 
-function generateTitle() {
+export function generateTitle() {
     const titleList = ['Mr.', 'Mrs.']
     const randomNumber = Math.floor(Math.random() * titleList.length)
     const randomTitle = titleList[randomNumber]

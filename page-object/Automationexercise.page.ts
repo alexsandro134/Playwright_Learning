@@ -1,4 +1,5 @@
 import { Page } from "@playwright/test";
+import { User } from "../types/User.type";
 export class Automationexsercise {
     constructor(private page: Page) { }
 

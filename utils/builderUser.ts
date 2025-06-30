@@ -1,9 +1,11 @@
-function generateUser(age: number) {
-    const username = generateUniqueUsername()
+import { generateAddress, generateMobileNumber, generateZipcode, generateCity, generateCountry, generateState, generateUniqueUsername, generateTitle, generateUniqueLastname, generateUniqueEmail } from "./generateData"
+
+export function generateUser(age: number) {
+    const name = generateUniqueUsername()
     const user = {
         title: generateTitle(),
-        username: username,
-        firstname: username,
+        username: name.username,
+        firstname: name.firstname,
         lastname: generateUniqueLastname(),
         email: generateUniqueEmail(),
         password: '12345678',
