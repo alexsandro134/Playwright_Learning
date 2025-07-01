@@ -22,7 +22,7 @@ export class Automationexsercise {
         await this.page.locator('input[name="name"]').fill(contactForm.name)
         await this.page.locator('input[name="email"]').fill(contactForm.email)
         await this.page.locator('input[name="subject"]').fill(contactForm.subject)
-        await this.page.locator('input[name="message"]').fill(contactForm.message)
+        await this.page.locator('textarea[name="message"]').fill(contactForm.message)
         await this.page.locator('input[name="submit"]').click()
     }
 }
