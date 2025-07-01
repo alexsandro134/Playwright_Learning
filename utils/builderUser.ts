@@ -1,4 +1,4 @@
-import { generateAddress, generateMobileNumber, generateZipcode, generateCity, generateCountry, generateState, generateUniqueUsername, generateTitle, generateUniqueLastname, generateUniqueEmail } from "./generateData"
+import { generateAddress, generateMobileNumber, generateZipcode, generateCity, generateCountry, generateState, generateUniqueUsername, generateTitle, generateUniqueLastname, generateUniqueEmail, generateMessage, generateSubject } from "./generateData"
 
 export function generateUser(age: number) {
     const name = generateUniqueUsername()
@@ -18,4 +18,16 @@ export function generateUser(age: number) {
         address: generateAddress()
     }
     return user
+}
+
+export function generateContactForm() {
+    const name = generateUniqueUsername()
+    const subject = generateSubject()
+    const form = {
+        name: name.firstname,
+        email: generateUniqueEmail(),
+        subject: subject,
+        message: generateMessage(subject)
+    }
+    return form
 }

@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 import { User } from "../types/User.type";
+import { ContactForm } from "../types/ContactForm.type";
 export class Automationexsercise {
     constructor(private page: Page) { }
 
@@ -15,5 +16,13 @@ export class Automationexsercise {
         await this.page.locator('input#zipcode').fill(user.zipcode.toString())
         await this.page.locator('input#mobile_number').fill(user.mobile)
         await this.page.getByRole('button', { name: 'Create Account' }).click()
+    }
+
+    async inputContactForm(contactForm: ContactForm) {
+        await this.page.locator('input[name="name"]').fill(contactForm.name)
+        await this.page.locator('input[name="email"]').fill(contactForm.email)
+        await this.page.locator('input[name="subject"]').fill(contactForm.subject)
+        await this.page.locator('input[name="message"]').fill(contactForm.message)
+        await this.page.locator('input[name="submit"]').click()
     }
 }

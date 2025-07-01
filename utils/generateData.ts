@@ -65,3 +65,19 @@ export function generateTitle() {
     const randomTitle = titleList[randomNumber]
     return randomTitle
 }
+
+export function generateSubject() {
+    const subjects = ['Product questions', 'Order issues', 'General inquiries', 'Support requests']
+    const randomIndex = Math.floor(Math.random() * subjects.length)
+    return subjects[randomIndex]
+}
+
+export function generateMessage(subject: string) {
+    const subjectMessageMap = {
+        'Product questions': "Hi team, I am interested in your product, but I have a few questions before making a purchase. Could you please clarify the warranty? I’d appreciate any details you can provide. Thank you,",
+        'Order issues': "Hi team, I recently placed an order #01, but I have encountered an issue. The item I received is [damaged/incorrect/missing], and I would appreciate your help resolving this as soon as possible. Please let me know the next steps or if you need any additional information from me. Thank you, Alex",
+        'General inquiries': "Hi team, I hope this message finds you well. I have a few general questions regarding your services/products and would appreciate any information or guidance you can provide. Please let me know the best way to proceed or whom I should contact for more details. Thank you, Alex",
+        'Support requests': "Hi team, I’m experiencing an issue with logging into my account. I’ve tried basic troubleshooting, but the problem still persists. Could you please assist me in resolving this? Thank you, Alex"
+    }
+    return subjectMessageMap[subject as keyof typeof subjectMessageMap]
+}
