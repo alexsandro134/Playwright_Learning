@@ -10,25 +10,33 @@ const dataTest = [youngUser, seniorUser, businessUser]
 
 // dataTest.forEach((user) => {
 // for (const user of dataTest) {
-test(`User Registration`, async ({ page }) => {
-    await page.goto('https://automationexercise.com/')
-    await page.getByText(' Signup / Login').click()
-    await page.getByPlaceholder('Name').fill(youngUser.username)
-    await page.locator('[data-qa="signup-email"]').fill(youngUser.email)
-    await page.getByRole('button', { name: 'Signup' }).click()
+test.describe('', async () => {
+    const youngUser = generateUser(25)
+    const seniorUser = generateUser(40)
+    const businessUser = generateUser(35)
 
-    const enterAccountInformationPage = await page.getByText('Enter Account Information')
-    await expect(enterAccountInformationPage).toBeVisible()
+    for (const user of dataTest) {
+        test(`User Registration ${user.username}`, async ({ page }) => {
+            await page.goto('https://automationexercise.com/')
+            await page.getByText(' Signup / Login').click()
+            await page.getByPlaceholder('Name').fill(user.username)
+            await page.locator('[data-qa="signup-email"]').fill(user.email)
+            await page.getByRole('button', { name: 'Signup' }).click()
 
-    const automationexercisePage = new Automationexsercise(page)
-    automationexercisePage.inputNewAccountInformation(youngUser)
-    const txtAccountCreated = await page.getByText('Account Created!')
-    await expect(txtAccountCreated).toBeVisible()
+            const enterAccountInformationPage = await page.getByText('Enter Account Information')
+            await expect(enterAccountInformationPage).toBeVisible()
 
-    await page.getByText('Continue').click()
-    let loginUser = await page.locator('li a b').innerText()
-    await expect(loginUser).toEqual(youngUser.username)
-});
+            const automationexercisePage = new Automationexsercise(page)
+            automationexercisePage.inputNewAccountInformation(user)
+            const txtAccountCreated = await page.getByText('Account Created!')
+            await expect(txtAccountCreated).toBeVisible()
+
+            await page.getByText('Continue').click()
+            let loginUser = await page.locator('li a b').innerText()
+            await expect(loginUser).toEqual(user.username)
+        });
+    }
+})
 
 test.afterEach(async ({ page }) => {
     await page.getByText(' Delete Account').click()
