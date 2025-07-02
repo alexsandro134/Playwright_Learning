@@ -25,4 +25,12 @@ export class Automationexsercise {
         await this.page.locator('textarea[name="message"]').fill(contactForm.message)
         await this.page.locator('input[name="submit"]').click()
     }
+
+    async getValidityPropertiesEmailInput(): Promise<string> {
+        let emailElement = await this.page.locator('input[name="email"]')
+        let validationMessage = await emailElement.evaluate((el: HTMLInputElement) => {
+            return el.validationMessage
+        })
+        return validationMessage
+    }
 }

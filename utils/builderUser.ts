@@ -20,12 +20,20 @@ export function generateUser(age: number) {
     return user
 }
 
-export function generateContactForm() {
+export function generateContactForm(invalid?: string) {
+    let email = generateUniqueEmail()
     const name = generateUniqueUsername()
+    if(invalid === 'invalid') {
+        email = 'invalid-email'
+    }
+    if(invalid === 'blank') {
+        email = ''
+        name.firstname = ''
+    }
     const subject = generateSubject()
     const form = {
         name: name.firstname,
-        email: generateUniqueEmail(),
+        email: email,
         subject: subject,
         message: generateMessage(subject)
     }
