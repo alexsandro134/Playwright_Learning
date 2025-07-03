@@ -14,8 +14,8 @@ test("Contact Form_Valid data", async ({ page }) => {
     const automationexercisePage = new Automationexsercise(page);
     await automationexercisePage.inputContactForm(form);
     await automationexercisePage.uploadFile()
+    page.on('dialog', dialog => dialog.accept());
     await automationexercisePage.clickSubmitBtn()
-    await automationexercisePage.acceptDialog()
     
     let btnSuccess = await page.locator('a.btn-success')
     await expect(btnSuccess).toBeVisible()

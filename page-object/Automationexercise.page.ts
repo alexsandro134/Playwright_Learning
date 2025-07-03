@@ -35,13 +35,6 @@ export class Automationexsercise {
 
     async clickSubmitBtn() {
         await this.page.locator('input[name="submit"]').click()
-        await this.page.waitForTimeout(5000)
-    }
-
-    async acceptDialog() {
-        // await this.page.evaluate('(() => {window.waitForPrintDialog = new Promise(f => window.print = f);})()');
-        // await this.page.waitForFunction('window.waitForPrintDialog');
-        this.page.on('dialog', dialog => dialog.accept());
     }
 
     async getValidityPropertiesEmailInput(): Promise<string> {
