@@ -1,6 +1,7 @@
 import { Page } from "@playwright/test";
 import { User } from "../types/User.type";
 import { ContactForm } from "../types/ContactForm.type";
+import path = require('path');
 export class Automationexsercise {
     constructor(private page: Page) { }
 
@@ -23,7 +24,24 @@ export class Automationexsercise {
         await this.page.locator('input[name="email"]').fill(contactForm.email)
         await this.page.locator('input[name="subject"]').fill(contactForm.subject)
         await this.page.locator('textarea[name="message"]').fill(contactForm.message)
+    }
+
+    async uploadFile() {
+        const fileChooserPromise = this.page.waitForEvent('filechooser')
+        await this.page.locator('input[name="upload_file"]').click()
+        const fileChooser = await fileChooserPromise
+        await fileChooser.setFiles(path.join(__dirname, '../resoures/', 'sample.jpg'))
+    }
+
+    async clickSubmitBtn() {
         await this.page.locator('input[name="submit"]').click()
+        await this.page.waitForTimeout(5000)
+    }
+
+    async acceptDialog() {
+        // await this.page.evaluate('(() => {window.waitForPrintDialog = new Promise(f => window.print = f);})()');
+        // await this.page.waitForFunction('window.waitForPrintDialog');
+        this.page.on('dialog', dialog => dialog.accept());
     }
 
     async getValidityPropertiesEmailInput(): Promise<string> {
