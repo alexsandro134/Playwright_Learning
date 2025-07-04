@@ -25,12 +25,48 @@ test('POST create new users', async ({ request }) => {
     })
     const bodyJson: NewUserData = await postNewUsers.json()
     await expect(postNewUsers.status()).toEqual(201)
-    await expect(bodyJson).not.toBeUndefined
+    await expect(bodyJson).not.toBeUndefined()
+    await expect(bodyJson).toHaveProperty('name')
+    await expect(bodyJson).toHaveProperty('job')
+    await expect(bodyJson).toHaveProperty('id')
+    await expect(bodyJson).toHaveProperty('createdAt')
+    await expect(bodyJson.name).toBe(bodyData.name)
 });
 
 test('GET single user', async ({ request }) => {
     const getSingleUser = await request.get('https://reqres.in/api/users/2')
-    const resp: UserData = await getSingleUser.json().data
+    const bodyJson = await getSingleUser.json()
+    const resp: UserData = bodyJson.data
     await expect(getSingleUser.status()).toEqual(200)
-    await expect(resp).not.toBeUndefined
+    await expect(resp).not.toBeUndefined()
+    await expect(resp).toHaveProperty('id')
+    await expect(resp).toHaveProperty('email')
+    await expect(resp.id).toBe(2)
+});
+
+test('PUT update user', async ({ request }) => {
+    const bodyData = generateBodyUserData()
+    const putDataUser = await request.put('https://reqres.in/api/users/2', {
+        headers: {
+            'x-api-key': 'reqres-free-v1'
+        }, data: {
+            "name": bodyData.name,
+            "job": bodyData.job
+        }
+    })
+    const bodyJson: NewUserData = await putDataUser.json()
+    await expect(putDataUser.status()).toEqual(200)
+    await expect(bodyJson).toHaveProperty('name')
+    await expect(bodyJson).toHaveProperty('job')
+    await expect(bodyJson).toHaveProperty('updatedAt')
+});
+
+test('DELETE user', async ({ request }) => {
+    // How would you delete a user?const bodyData = generateBodyUserData()
+    const deleteUser = await request.delete('https://reqres.in/api/users/2', {
+        headers: {
+            'x-api-key': 'reqres-free-v1'
+        }
+    })
+    await expect(deleteUser.status()).toEqual(204)
 });
