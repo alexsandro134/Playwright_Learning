@@ -27,3 +27,10 @@ test('POST create new users', async ({ request }) => {
     await expect(postNewUsers.status()).toEqual(201)
     await expect(bodyJson).not.toBeUndefined
 });
+
+test('GET single user', async ({ request }) => {
+    const getSingleUser = await request.get('https://reqres.in/api/users/2')
+    const resp: UserData = await getSingleUser.json().data
+    await expect(getSingleUser.status()).toEqual(200)
+    await expect(resp).not.toBeUndefined
+});
