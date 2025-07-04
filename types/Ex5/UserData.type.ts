@@ -5,3 +5,10 @@ export type UserData = {
     last_name: string,
     avatar: string
 }
+
+export type NewUserData = {
+    name: string,
+    job: string,
+    id?: string,
+    createAt?: Date
+}

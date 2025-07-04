@@ -81,3 +81,9 @@ export function generateMessage(subject: string) {
     }
     return subjectMessageMap[subject as keyof typeof subjectMessageMap]
 }
+
+export function generateJob() {
+    const listJobs = ['junior', 'senior', 'principal', 'leader', 'manager']
+    const randomIndex = Math.floor(Math.random() * listJobs.length)
+    return listJobs[randomIndex]
+}

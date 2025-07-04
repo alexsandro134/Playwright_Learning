@@ -1,4 +1,4 @@
-import { generateAddress, generateMobileNumber, generateZipcode, generateCity, generateCountry, generateState, generateUniqueUsername, generateTitle, generateUniqueLastname, generateUniqueEmail, generateMessage, generateSubject } from "./generateData"
+import { generateAddress, generateMobileNumber, generateZipcode, generateCity, generateCountry, generateState, generateUniqueUsername, generateTitle, generateUniqueLastname, generateUniqueEmail, generateMessage, generateSubject, generateJob } from "./generateData"
 
 export function generateUser(age: number) {
     const name = generateUniqueUsername()
@@ -23,10 +23,10 @@ export function generateUser(age: number) {
 export function generateContactForm(invalid?: string) {
     let email = generateUniqueEmail()
     const name = generateUniqueUsername()
-    if(invalid === 'invalid') {
+    if (invalid === 'invalid') {
         email = 'invalid-email'
     }
-    if(invalid === 'blank') {
+    if (invalid === 'blank') {
         email = ''
         name.firstname = ''
     }
@@ -38,4 +38,14 @@ export function generateContactForm(invalid?: string) {
         message: generateMessage(subject)
     }
     return form
+}
+
+export function generateBodyUserData() {
+    const name = generateUniqueUsername()
+    const job = generateJob()
+    const body = {
+        name: name.firstname,
+        job: job
+    }
+    return body
 }
