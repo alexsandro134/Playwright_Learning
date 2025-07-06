@@ -12,3 +12,9 @@ export type NewUserData = {
     id?: string,
     createAt?: Date
 }
+
+export type Todo = {
+    id: number,
+    text: string,
+    completed: boolean
+}
