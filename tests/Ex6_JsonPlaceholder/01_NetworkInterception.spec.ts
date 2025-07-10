@@ -53,27 +53,28 @@ test('Modify API responses', async ({ page }) => {
 
 test('API Performance Monitoring', async ({ page }) => {
     const performanceData = [];
-    const requestFinishedPromise = page.waitForEvent('requestfinished')
-    await page.goto('https://jsonplaceholder.typicode.com/');
-    const request = await requestFinishedPromise
+
     page.on('response', response => {
+        let timing = response.request().timing()
         if (response.url().includes("/posts")) {
             // Your thinking: What timing data do you need to capture?
-            let startTime = request.timing().requestStart
-            let endTime = request.timing().responseEnd
+            let startTime = timing.requestStart
+            let endTime = timing.responseEnd
             // How do you calculate the total response time?
             let responseTime = endTime - startTime
-            let slowResponse = (responseTime > 2000) ? true : false
             let performanceInfo = {
                 endpoint: response.url(),
                 responseTime: responseTime,
-                slowResponse: slowResponse
             }
             // What should you store in performanceData array?
             performanceData.push(performanceInfo)
+            expect(responseTime).toBeLessThan(2000)
         }
     });
 
+    const requestFinishedPromise = page.waitForEvent('requestfinished')
+    await page.goto('https://jsonplaceholder.typicode.com/');
+    const request = await requestFinishedPromise
     await page.locator('td + td a').locator('text="/posts"').click()
     await page.goBack()
     await page.locator('td + td a').locator('text="/posts/1"').click()
@@ -101,7 +102,7 @@ test('Network Failure Simulation', async ({ page }) => {
     await page.goto('https://jsonplaceholder.typicode.com/');
     await page.locator('td + td a').locator('text="/posts"').click()
     // Your challenge: How do you verify the UI shows appropriate error handling?
-    await expect(page.getByText('Internal Server Error')).toBeTruthy()
+    await expect(page.getByText('Internal Server Error')).toBeVisible()
 });
 
 test('POST Request Validation', async ({ page, request }) => {
@@ -116,23 +117,22 @@ test('POST Request Validation', async ({ page, request }) => {
             console.log('request header', route.request().headers())
 
             // Should you let the request continue or return a mock response?
+            route.continue()
         }
     });
 
-    // Trigger a POST request (create new post)
-    const response = await request.post('https://jsonplaceholder.typicode.com/posts', {
-        data: {
-            title: 'foo',
-            body: 'bar',
-            userId: 1,
-        }, headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-        }
+    // Make the browser send the POST request
+    const response = await page.evaluate(async () => {
+        const responseData = await fetch('https://jsonplaceholder.typicode.com/posts', {
+            method: 'POST',
+            body: JSON.stringify({ title: 'foo', body: 'bar', userId: 1 }),
+            headers: { 'Content-type': 'application/json; charset=UTF-8' }
+        })
+        const data = await responseData.json()
+        return data
     })
-
-    expect(response.status()).toBe(201)
-    const responseBody = await response.json()
-    expect(responseBody).toHaveProperty('title')
-    expect(responseBody).toHaveProperty('body')
-    expect(responseBody).toHaveProperty('userId')
+    console.log(response)
+    expect(response).toHaveProperty('title')
+    expect(response).toHaveProperty('body')
+    expect(response).toHaveProperty('userId')
 });
