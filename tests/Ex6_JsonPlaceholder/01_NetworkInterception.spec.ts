@@ -62,6 +62,12 @@ test('API Performance Monitoring', async ({ page }) => {
             let endTime = timing.responseEnd
             // How do you calculate the total response time?
             let responseTime = endTime - startTime
+
+            // Your enhancement: What other metrics matter?
+            // - DNS lookup time: timing.domainLookupEnd - timing.domainLookupStart
+            // - Connection time: timing.connectEnd - timing.connectStart
+            // - Time to first byte: timing.responseStart - timing.requestStart
+
             let performanceInfo = {
                 endpoint: response.url(),
                 responseTime: responseTime,
@@ -131,8 +137,10 @@ test('POST Request Validation', async ({ page, request }) => {
         const data = await responseData.json()
         return data
     })
-    console.log(response)
+    expect(response).toHaveProperty('id')
     expect(response).toHaveProperty('title')
     expect(response).toHaveProperty('body')
     expect(response).toHaveProperty('userId')
+    expect(typeof response.title).toBe('string')
+    expect(typeof response.userId).toBe('number')
 });
