@@ -20,13 +20,16 @@ test('Master dynamic selectors', async ({ page }) => {
     // Goal: Find the 2nd todo item (regardless of text)
     // Your thinking: How do you select by position?
     const secondTodoItem = page.locator('li[@data-testid="todo-item"]').locator('nth=1')
-    
+
     // Challenge 3: Find todo by attribute
     // Goal: Find todo with specific data attributes
     // Your thinking: How do you target data-* attributes?
-    const checkedItem = page.locator('li[@data-testid="todo-item"]').getAttribute('checked')
+    const completeItem = page.locator('li[@class="completed]')
+    const checkedItem = page.locator('li[@data-testid="todo-item"]').filter({ has: completeItem })
 
     // Challenge 4: Complex filtering
     // Goal: Find uncompleted todos only
     // Your thinking: How do you filter by element state?
+
+    const notCompleteItem = page.locator('li[@data-testid="todo-item"]').filter({ hasNot: completeItem })
 });
