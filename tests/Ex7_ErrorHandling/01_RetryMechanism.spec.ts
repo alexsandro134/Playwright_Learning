@@ -80,13 +80,13 @@ test('Medium_Realistic timeout scenarios', async ({ page }) => {
     console.log(`Medium operation took: ${responseTime}ms`);
 });
 
-test.only('Hung_Realistic timeout scenarios', async ({ page }) => {
+test('Hung_Realistic timeout scenarios', async ({ page }) => {
     await page.route('**/albums**', route => {
         console.log('Request will hang...');
     });
 
     await page.goto('https://jsonplaceholder.typicode.com');
-
+    const startTime = Date.now();
     const responsePromise = page.waitForResponse(
         response => response.url().includes('/albums'),
         { timeout: 3000 } // Should timeout
@@ -95,19 +95,180 @@ test.only('Hung_Realistic timeout scenarios', async ({ page }) => {
     await page.locator('td a').locator('text="/albums"').click();
     try {
         await responsePromise
-        await expect(page.getByText('"title": "quidem molestiae enim"')).toBeVisible()
+        throw new Error('Expected timeout but request succeeded');
     } catch (error) {
-        console.log(`Unable to load albums`);
+        const endTime = Date.now();
+        const timeoutDuration = endTime - startTime;
+        expect(timeoutDuration).toBeGreaterThan(2800);  // Close to 3000ms
+        expect(timeoutDuration).toBeLessThan(3000);     // But not too much over
+
+        console.log(`Request timed out after: ${timeoutDuration}ms`);
+
+        expect(error.message).toContain('Timeout');
     }
 });
 
-test('App functionality with failed dependencies', async ({ page }) => {
-    // Block external services
-    // Verify app still works with limited functionality
-    // Test "offline mode" behavior
+test('Core functionality works with failed API dependencies', async ({ page }) => {
+    await page.route('**/users/**', route => {
+        console.log('User API blocked - simulating service failure');
+        route.abort('failed');
+    });
+
+    await page.route('**/albums/**', route => {
+        console.log('Albums API blocked - simulating service failure');
+        route.abort('failed');
+    });
+
+    await page.route('**/posts/**', route => {
+        route.continue(); // Posts still work
+    });
+
+    await page.goto('https://jsonplaceholder.typicode.com');
+    await page.locator('td a').locator('text="/users"').click()
+    await expect(page.getByText('"name": "Leanne Graham",')).toBeVisible()
+    await page.goBack()
+    await page.click('[href="/posts"]');
+    await expect(page.getByText('sunt aut facere')).toBeVisible();
+    await page.goBack()
+    await page.click('[href="/users"]');
 });
 
-test('User error recovery flow', async ({ page }) => {
-    // Simulate error → User sees message → Clicks retry → Success
-    // Complete recovery cycle testing
+test('Test graceful degradation predictions', async ({ page }) => {
+    console.log('=== Testing Graceful Degradation ===');
+
+    // Block specific services
+    await page.route('**/users/**', route => {
+        console.log('🚫 Blocking users API...');
+        route.abort('failed');
+    });
+
+    await page.route('**/albums/**', route => {
+        console.log('🚫 Blocking albums API...');
+        route.abort('failed');
+    });
+
+    // Allow core functionality
+    await page.route('**/posts/**', route => {
+        console.log('✅ Allowing posts API...');
+        route.continue();
+    });
+
+    await page.goto('https://jsonplaceholder.typicode.com');
+
+    // Test Prediction 1: Core functionality still works
+    console.log('Testing: Core posts functionality...');
+    await page.click('[href="/posts"]');
+
+    try {
+        await expect(page.getByText('sunt aut facere')).toBeVisible({ timeout: 5000 });
+        console.log('✅ PREDICTION CORRECT: Posts still work!');
+    } catch (error) {
+        console.log('❌ PREDICTION WRONG: Posts failed too!');
+    }
+
+    // Test Prediction 2: Blocked services show graceful fallback
+    console.log('Testing: Blocked users service...');
+
+    await page.goBack()
+    await page.click('[href="/users"]');
+
+    // Wait and see what actually happens
+    await page.waitForTimeout(3000);
+
+    // Check what the page shows
+    const currentUrl = page.url();
+    console.log('Current URL after clicking users:', currentUrl);
+
+    // Test what's actually on the page
+    const pageText = await page.textContent('body');
+    console.log('Page content preview:', pageText?.substring(0, 200));
+
+    await page.goBack()
+    // Test Prediction 3: Navigation still works
+    console.log('Testing: Navigation still functional...');
+    try {
+        await page.click('[href="/posts"]'); // Try to go back to working section
+        await expect(page.getByText('sunt aut facere')).toBeVisible();
+        console.log('✅ PREDICTION CORRECT: Navigation still works!');
+    } catch (error) {
+        console.log('❌ PREDICTION WRONG: Navigation broken!');
+    }
+});
+
+test('Debug route interception', async ({ page }) => {
+    let blockedRequests = 0;
+
+    await page.route('**/users', route => {
+        blockedRequests++;
+        console.log(`🚫 BLOCKED: ${route.request().url()}`);
+        route.abort('failed');
+    });
+
+    await page.route('**/albums', route => {
+        console.log(`🚫 BLOCKED: ${route.request().url()}`);
+        route.abort('failed');
+    });
+
+    // Allow posts to work
+    await page.route('**/posts', route => {
+        console.log(`✅ ALLOWED: ${route.request().url()}`);
+        route.continue();
+    });
+
+    await page.goto('https://jsonplaceholder.typicode.com');
+    // Test core functionality still works
+    await page.click('[href="/posts"]');
+    await expect(page.getByText('sunt aut facere')).toBeVisible();
+    console.log('✅ Posts still work when other services blocked');
+    await page.goBack()
+    // Test blocked service
+    await page.click('[href="/users"]');
+    await page.waitForTimeout(2000);
+    // Now you should see real blocking behavior!
+    console.log(`Blocked requests count: ${blockedRequests}`);
+
+    // Your real investigation questions:
+    // 1. What appears on the blocked users page?
+    // 2. Is there a network error message?
+    // 3. Does the page show "loading forever"?
+    // 4. Is navigation still functional?
+    
+    const pageContent = await page.textContent('body');
+    console.log('Blocked page content:', pageContent?.substring(0, 200));
+    await page.goBack()
+    // Test 3: Can you navigate away from blocked page?
+    await page.click('[href="/posts"]');
+    await expect(page.getByText('sunt aut facere')).toBeVisible();
+    console.log('✅ Navigation recovery works');
+});
+
+test('Investigate actual network requests', async ({ page }) => {
+    // Capture ALL requests to see what's really being called
+    const networkRequests = [];
+
+    page.on('request', request => {
+        networkRequests.push(request.url());
+        console.log(`🌐 REQUEST: ${request.method()} ${request.url()}`);
+    });
+
+    page.on('response', response => {
+        console.log(`📥 RESPONSE: ${response.status()} ${response.url()}`);
+    });
+
+    await page.goto('https://jsonplaceholder.typicode.com');
+    console.log('--- Clicking users link ---');
+    await page.click('[href="/users"]');
+
+    // Wait for page to load
+    await page.waitForTimeout(2000);
+
+    console.log('\n=== ALL NETWORK REQUESTS ===');
+    networkRequests.forEach((url, index) => {
+        console.log(`${index + 1}. ${url}`);
+    });
+
+    // Check if any requests contain 'users'
+    const userRequests = networkRequests.filter(url => url.includes('users'));
+    console.log('\n=== USER-RELATED REQUESTS ===');
+    userRequests.forEach(url => console.log(`🔍 ${url}`));
 });
