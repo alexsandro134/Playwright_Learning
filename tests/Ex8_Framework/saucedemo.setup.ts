@@ -7,13 +7,11 @@ const lockedOutAuthFile = path.join(__dirname, 'playwright/.auth/lockedOutUser.j
 const problemAuthFile = path.join(__dirname, 'playwright/.auth/problemUser.json')
 const performanceGlitchFile = path.join(__dirname, 'playwright/.auth/performanceGlitchUser.json')
 
-
-
 setup('authenticate', async ({ page }) => {
     const sauceDemo = new Saucedemo(page)
     await sauceDemo.loginWithUser('standard_user')
 
-    page.waitForURL('https://www.saucedemo.com/inventory.html')
+    await page.waitForURL('https://www.saucedemo.com/inventory.html')
     await page.context().storageState({ path: authFile })
 });
 
