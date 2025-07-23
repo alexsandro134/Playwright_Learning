@@ -1,6 +1,6 @@
 import defineConfig from "../../../playwright.config"
 
-export const config = {
+export const frameworkConfig = {
     ...defineConfig,
     retries: 3,
     authPath: './.auth',

@@ -1,6 +1,7 @@
 import { Page } from "@playwright/test";
-import * as dotenv from 'dotenv/config'
+import { getConfig } from '../configuration/getConfig'
 
+const config = getConfig('local')
 
 export class Saucedemo {
     constructor(private page: Page) {
