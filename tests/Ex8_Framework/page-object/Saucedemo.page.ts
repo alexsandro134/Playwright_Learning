@@ -16,7 +16,7 @@ export class Saucedemo {
     public btnLogin = this.page.locator('#login-button')
 
     async loginWithUser(username: string, timeout?: number) {
-        await this.page.goto(process.env.BASE_URL)
+        await this.page.goto(config.BASE_URL)
         await this.inputUsername.fill(username)
         await this.inputPwd.fill('secret_sauce')
         await this.btnLogin.click({ timeout: timeout })

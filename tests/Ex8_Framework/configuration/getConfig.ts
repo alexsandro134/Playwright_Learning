@@ -3,8 +3,8 @@ import { frameworkConfig } from "./framework.config"
 import * as dotenv from 'dotenv'
 
 function getConfig(environment: string) {
-    const envConfig = dotenv.config({ path: `./env/{environment}.env` })
-    return _.merge(frameworkConfig, envConfig)
+    const envConfig = dotenv.config({ path: `./env/${environment}.env` })
+    return _.merge(frameworkConfig, envConfig.parsed)
 }
 
 export { getConfig }
