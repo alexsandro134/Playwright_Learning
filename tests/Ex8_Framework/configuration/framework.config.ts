@@ -8,5 +8,14 @@ export const frameworkConfig = {
         problem_user: 'problem_user',
         performance_glitch_user: 'performance_glitch_user',
         password: 'secret_sauce'
+    },
+    testData: {
+        checkout: {
+            validForm: { name: 'John', address: '123 Main St' },
+            invalidForm: { name: '', address: '' }
+        },
+        products: {
+            backpack: { id: 'sauce-labs-backpack', name: 'Sauce Labs Backpack' }
+        }
     }
 }

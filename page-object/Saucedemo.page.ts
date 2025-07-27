@@ -1,5 +1,6 @@
 import { Page } from "@playwright/test";
 
+
 export class Saucedemo {
     constructor(private page: Page) { }
 
