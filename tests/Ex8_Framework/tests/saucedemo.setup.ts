@@ -1,5 +1,5 @@
 import { expect, Page, test as setup } from "@playwright/test";
-import { Saucedemo } from '../../page-object/Saucedemo.page'
+import { Saucedemo } from '../../../page-object/Saucedemo.page'
 import path = require('path');
 
 const authFile = path.join(__dirname, 'playwright/.auth/normalUser.json')
