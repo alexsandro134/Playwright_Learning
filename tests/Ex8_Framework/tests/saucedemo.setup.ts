@@ -6,35 +6,49 @@ import { getConfig } from "../configuration/getConfig";
 
 const config = getConfig()
 
-const authFile = path.join(__dirname, config.authPath + '/normalUser.json')
-const lockedOutAuthFile = path.join(__dirname, config.authPath + '/lockedOutUser.json')
-const problemAuthFile = path.join(__dirname, config.authPath + '/problemUser.json')
-const performanceGlitchFile = path.join(__dirname, config.authPath + '/performanceGlitchUser.json')
+const standard_user = path.join(__dirname, config.authPath + '/normalUser.json')
+const locked_out_user = path.join(__dirname, config.authPath + '/lockedOutUser.json')
+const problem_user = path.join(__dirname, config.authPath + '/problemUser.json')
+const performance_glitch_user = path.join(__dirname, config.authPath + '/performanceGlitchUser.json')
 
-setup('authenticate', async ({ page }) => {
-    const sauceDemo = new Saucedemo(page)
-    await sauceDemo.loginWithUser(config.users.standard_user)
+initSetup(standard_user)
+initSetup(locked_out_user)
+initSetup(problem_user)
+initSetup(performance_glitch_user)
 
-    await page.waitForURL('https://www.saucedemo.com/inventory.html')
-    await page.context().storageState({ path: authFile })
-});
+// setup('authenticate', async ({ page }) => {
+//     const sauceDemo = new Saucedemo(page)
+//     await sauceDemo.loginWithUser(config.users.standard_user)
 
-setup('lockedOut', async ({ page }) => {
-    const sauceDemo = new Saucedemo(page)
-    await sauceDemo.loginWithUser(config.users.locked_out_user)
+//     await page.waitForURL(config.INVENTORY_URL)
+//     await page.context().storageState({ path: standard_user })
+// });
 
-    await page.context().storageState({ path: lockedOutAuthFile })
-})
+// setup('lockedOut', async ({ page }) => {
+//     const sauceDemo = new Saucedemo(page)
+//     await sauceDemo.loginWithUser(config.users.locked_out_user)
 
-setup('problem', async ({ page }) => {
-    const sauceDemo = new Saucedemo(page)
-    await sauceDemo.loginWithUser(config.users.problem_user)
-    await page.context().storageState({ path: problemAuthFile })
-})
+//     await page.context().storageState({ path: locked_out_user })
+// })
 
-setup('performanceGlitch', async ({ page }) => {
-    const sauceDemo = new Saucedemo(page)
-    await sauceDemo.loginWithUser(config.users.performance_glitch_user, config.timeout)
+// setup('problem', async ({ page }) => {
+//     const sauceDemo = new Saucedemo(page)
+//     await sauceDemo.loginWithUser(config.users.problem_user)
+//     await page.context().storageState({ path: problem_user })
+// })
 
-    await page.context().storageState({ path: performanceGlitchFile })
-})
+// setup('performanceGlitch', async ({ page }) => {
+//     const sauceDemo = new Saucedemo(page)
+//     await sauceDemo.loginWithUser(config.users.performance_glitch_user, config.timeout)
+
+//     await page.context().storageState({ path: performance_glitch_user })
+// })
+
+function initSetup(userType: string) {
+    setup(userType, async ({ page }) => {
+        const sauceDemo = new Saucedemo(page)
+        await sauceDemo.loginWithUser(config.users.userType)
+
+        await page.context().storageState({ path: userType })
+    })
+}
