@@ -21,16 +21,9 @@ function initSetup(userType: string) {
 
         const sauceDemo = new Saucedemo(page)
         await sauceDemo.loginWithUser(username)
-        const statePath = path.join(__dirname, config.authPath + '/' + username.fileName)
+        const statePath = path.join(__dirname, config.authPath + '/' + userType + '.json')
         await page.context().storageState({ path: statePath })
 
-        if (username.needsUrlVerification) {
-            await page.waitForURL(config.INVENTORY_URL)
-        }
+        await page.waitForURL(config.INVENTORY_URL)
     })
-}
-
-type User = {
-    fileName: string,
-    needsUrlVerification: boolean
 }

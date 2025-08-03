@@ -3,7 +3,7 @@ import { getConfig } from "../configuration/getConfig";
 
 const config = getConfig()
 test.describe('Testing with lock out user', () => {
-    test.use({ storageState: config.authPath + '/lockedOutUser.json' })
+    test.use({ storageState: config.authPath + '/locked_out_user.json' })
     test('Unable to login with locked out user', async ({ page }) => {
         // is there anyway to verify the state when click login button
         await page.goto(config.INVENTORY_URL)
