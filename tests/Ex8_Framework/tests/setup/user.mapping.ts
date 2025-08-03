@@ -1,4 +1,4 @@
-const userSetupMapping = {
+export const userSetupMapping = {
   standard_user: {
     fileName: 'normalUser.json',
     setupName: 'standard_user',
