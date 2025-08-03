@@ -3,26 +3,40 @@ import path = require('path');
 import { test as setup } from "@playwright/test";
 import { Saucedemo } from '../../page-object/Saucedemo.page'
 import { getConfig } from "../../configuration/getConfig";
+import { userSetupMapping } from './user.mapping';
 
 const config = getConfig()
 
-// const standard_user = path.join(__dirname, config.authPath + '/normalUser.json')
-// const locked_out_user = path.join(__dirname, config.authPath + '/lockedOutUser.json')
-// const problem_user = path.join(__dirname, config.authPath + '/problemUser.json')
-// const performance_glitch_user = path.join(__dirname, config.authPath + '/performanceGlitchUser.json')
+initSetup(userSetupMapping.standard_user)
+initSetup(userSetupMapping.locked_out_user)
+initSetup(userSetupMapping.problem_user)
+initSetup(userSetupMapping.performance_glitch_user)
 
-initSetup('standard_user')
-initSetup('locked_out_user')
-initSetup('problem_user')
-initSetup('performance_glitch_user')
+// function initSetup(userType: string) {
+//     setup(userType, async ({ page }) => {
+//         const sauceDemo = new Saucedemo(page)
+//         await sauceDemo.loginWithUser(config.users[userType])
 
-function initSetup(userType: string) {
-    setup(userType, async ({ page }) => {
+//         const statePath = path.join(__dirname, config.authPath + '/' + userType + '.json')
+
+//         await page.context().storageState({ path: statePath })
+//     })
+// }
+
+
+function initSetup(userType: User) {
+    setup(userType.setupName, async ({ page }) => {
         const sauceDemo = new Saucedemo(page)
-        await sauceDemo.loginWithUser(config.users[userType])
+        await sauceDemo.loginWithUser(config.users[userType.setupName])
 
-        const statePath = path.join(__dirname, config.authPath + '/' + userType + '.json')
+        const statePath = path.join(__dirname, config.authPath + '/' + userType.fileName)
 
         await page.context().storageState({ path: statePath })
     })
+}
+
+type User = {
+    fileName: string,
+    setupName: string,
+    needsUrlVerification: boolean
 }
